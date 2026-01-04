@@ -1,0 +1,1 @@
+# ladyca_diary
