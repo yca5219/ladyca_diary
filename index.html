@@ -1,0 +1,246 @@
+<!-- Created: 2026-01-02 14:00:00 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="할 일 관리 대시보드">
+    <title>TO DO TODAY - 대시보드</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4A90E2">
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="할일대시보드">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icon-192.png">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- ========== 상단: 헤더 ========== -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">✓</span>
+                <h1 class="logo-text">TO DO TODAY</h1>
+            </div>
+            <div class="datetime">
+                <div class="date" id="currentDate">2026년 1월 2일 목요일</div>
+                <div class="time" id="currentTime">14:00:00</div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="다크 모드 전환">
+                <span class="icon-sun">☀️</span>
+                <span class="icon-moon">🌙</span>
+            </button>
+        </header>
+
+        <!-- ========== 오늘의 명언 섹션 ========== -->
+        <section class="quote-section">
+            <div class="quote-card">
+                <div class="quote-icon">"</div>
+                <p class="quote-text" id="quoteText">오늘 할 수 있는 일을 내일로 미루지 마라.</p>
+                <p class="quote-author" id="quoteAuthor">- 벤자민 프랭클린</p>
+            </div>
+        </section>
+
+        <!-- ========== 메인: 할 일 관리 섹션 ========== -->
+        <main class="main-section">
+            <!-- 입력폼 -->
+            <div class="input-card">
+                <form id="todoForm" class="todo-form">
+                    <input
+                        type="text"
+                        id="todoInput"
+                        class="todo-input"
+                        placeholder="새로운 할 일을 입력하세요..."
+                        maxlength="100"
+                        autocomplete="off"
+                    >
+                    <select id="categorySelect" class="category-select">
+                        <option value="work">업무</option>
+                        <option value="personal">개인</option>
+                        <option value="study">공부</option>
+                        <option value="exercise">운동</option>
+                    </select>
+                    <button type="submit" class="add-btn">
+                        <span class="add-icon">+</span>
+                        <span class="add-text">추가</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 필터 & 진행률 -->
+            <div class="filter-progress-row">
+                <!-- 카테고리 필터 -->
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">전체</button>
+                    <button class="filter-btn" data-filter="work">업무</button>
+                    <button class="filter-btn" data-filter="personal">개인</button>
+                    <button class="filter-btn" data-filter="study">공부</button>
+                    <button class="filter-btn" data-filter="exercise">운동</button>
+                </div>
+
+                <!-- 오늘의 진행률 -->
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <span class="progress-label">오늘의 진행률</span>
+                        <span class="progress-value" id="progressValue">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="completedCount">0</span>/<span id="totalCount">0</span> 완료
+                    </div>
+                </div>
+            </div>
+
+            <!-- 카테고리별 진행률 -->
+            <div class="category-progress-section">
+                <div class="category-progress-item" data-category="work">
+                    <div class="category-progress-header">
+                        <span class="category-progress-label">업무</span>
+                        <span class="category-progress-count" id="workCount">0/0</span>
+                    </div>
+                    <div class="category-progress-bar">
+                        <div class="category-progress-fill work" id="workProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="category-progress-item" data-category="personal">
+                    <div class="category-progress-header">
+                        <span class="category-progress-label">개인</span>
+                        <span class="category-progress-count" id="personalCount">0/0</span>
+                    </div>
+                    <div class="category-progress-bar">
+                        <div class="category-progress-fill personal" id="personalProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="category-progress-item" data-category="study">
+                    <div class="category-progress-header">
+                        <span class="category-progress-label">공부</span>
+                        <span class="category-progress-count" id="studyCount">0/0</span>
+                    </div>
+                    <div class="category-progress-bar">
+                        <div class="category-progress-fill study" id="studyProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="category-progress-item" data-category="exercise">
+                    <div class="category-progress-header">
+                        <span class="category-progress-label">운동</span>
+                        <span class="category-progress-count" id="exerciseCount">0/0</span>
+                    </div>
+                    <div class="category-progress-bar">
+                        <div class="category-progress-fill exercise" id="exerciseProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 할 일 리스트 -->
+            <div class="todo-list-container">
+                <ul class="todo-list" id="todoList">
+                    <!-- 할 일 항목들이 여기에 렌더링됩니다 -->
+                    <li class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p class="empty-text">할 일이 없습니다. 위에서 추가해보세요!</p>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- ========== 하단: 통계 섹션 ========== -->
+        <section class="stats-section">
+            <h2 class="stats-title">📊 통계</h2>
+            <div class="stats-grid">
+                <!-- 주간 달성률 -->
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <span class="stats-icon">📅</span>
+                        <span class="stats-label">주간 달성률</span>
+                    </div>
+                    <div class="stats-value" id="weeklyRate">0%</div>
+                    <div class="stats-progress">
+                        <div class="stats-progress-fill" id="weeklyProgressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="stats-detail">
+                        <span id="weeklyCompleted">0</span>/<span id="weeklyTotal">0</span> 완료
+                    </div>
+                </div>
+
+                <!-- 월간 달성률 -->
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <span class="stats-icon">📆</span>
+                        <span class="stats-label">월간 달성률</span>
+                    </div>
+                    <div class="stats-value" id="monthlyRate">0%</div>
+                    <div class="stats-progress">
+                        <div class="stats-progress-fill" id="monthlyProgressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="stats-detail">
+                        <span id="monthlyCompleted">0</span>/<span id="monthlyTotal">0</span> 완료
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 푸터 ========== -->
+        <footer class="footer">
+            <p>&copy; 2026 TO DO TODAY. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+
+    <!-- Service Worker & PWA Install -->
+    <script>
+        // Service Worker 등록
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((reg) => {
+                        console.log('[PWA] Service Worker 등록 성공:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.error('[PWA] Service Worker 등록 실패:', err);
+                    });
+            });
+        }
+
+        // PWA 설치 프롬프트
+        let deferredPrompt;
+        const installBtn = document.createElement('button');
+        installBtn.className = 'pwa-install-btn';
+        installBtn.innerHTML = '📲 앱 설치';
+        installBtn.style.display = 'none';
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+            document.querySelector('.header').appendChild(installBtn);
+            console.log('[PWA] 설치 가능');
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('[PWA] 사용자 선택:', outcome);
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('[PWA] 앱 설치 완료!');
+            installBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
